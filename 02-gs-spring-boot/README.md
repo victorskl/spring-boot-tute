@@ -1,5 +1,11 @@
 # 02-gs-spring-boot
 
+- Tute focus: 
+  - spring-boot-starter
+  - spring-boot-test
+  - Unit Test, Integration Test
+  - Maven surefire, failsafe plugin
+
 - https://spring.io/guides/gs/spring-boot/
 
 ```

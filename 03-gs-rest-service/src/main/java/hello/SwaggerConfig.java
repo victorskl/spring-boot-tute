@@ -25,7 +25,8 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+//                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("hello"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
@@ -36,7 +37,7 @@ public class SwaggerConfig {
         return new ApiInfo(
                 "My REST API",
                 "Some custom description of API.",
-                 version,
+                version,
                 "Terms of service",
                 new Contact("John Doe", "www.example.com", "myeaddress@company.com"),
                 "License of API", "API license URL", Collections.emptyList());

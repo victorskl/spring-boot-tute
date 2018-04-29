@@ -1,4 +1,9 @@
-# 03-gs-rest-service + swagger
+# 03-gs-rest-service
+
+- Tute focus:
+  - creating simple REST API endpoint
+  - springfox swagger
+  - a bit more on actuator
 
 - https://spring.io/guides/gs/rest-service/
 
@@ -24,6 +29,8 @@ curl http://localhost:8080/greeting
 curl http://localhost:8080/greeting?name=User
 
 curl http://localhost:8080/v2/api-docs
+
+open -a Safari http://localhost:8080/swagger-ui.html
 ```
 
 - [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs)
