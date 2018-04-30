@@ -24,6 +24,7 @@
         <module>01-first-boot-app</module>
         <module>02-gs-spring-boot</module>
         <module>03-gs-rest-service</module>
+        <module>04-secured-rest-api</module>
     </modules>
 
 </project>

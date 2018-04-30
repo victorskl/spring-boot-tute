@@ -4,10 +4,12 @@
 
 APP=$1
 
-mkdir -p ${APP}/src/main/java
+mkdir -p ${APP}/src/main/java/start
 mkdir -p ${APP}/src/main/resources
 
 cat >${APP}/src/main/java/Application.java <<EOF
+package start;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -30,10 +32,12 @@ info.app.groupId = @project.groupId@
 info.app.artifactId = @project.artifactId@
 EOF
 
-mkdir -p ${APP}/src/test/java
+mkdir -p ${APP}/src/test/java/start
 mkdir -p ${APP}/src/test/resources
 
 cat >${APP}/src/test/java/ApplicationTest.java <<EOF
+package start;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -73,7 +77,7 @@ cat >${APP}/pom.xml <<EOF
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sankholin</groupId>
+    <groupId>start</groupId>
     <artifactId>${APP}</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>My Spring Boot App</name>

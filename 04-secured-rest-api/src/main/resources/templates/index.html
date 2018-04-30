@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <title>Secured Web App</title>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}"/>
+</head>
+
+<body>
+
+<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
+  Logged in user: <span sec:authentication="name"></span> |
+  Roles: <span sec:authentication="principal.authorities"></span>
+  <div>
+    <form action="#" th:action="@{/logout}" method="post">
+      <input type="submit" value="Logout"/>
+    </form>
+  </div>
+</div>
+
+<h1>Welcome to Secured Web</h1>
+
+<p>You can access the secured pages after authenticating.</p>
+
+<ul>
+  <li><a href="/greeting">/greeting</a></li>
+  <li><a href="/swagger-ui.html">/swagger-ui.html</a></li>
+  <li><a href="/v2/api-docs">/v2/api-docs</a></li>
+  <li><a href="/actuator">/actuator</a></li>
+  <li><a href="/logout">/logout</a></li>
+</ul>
+
+</body>
+</html>
