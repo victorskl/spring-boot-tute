@@ -9,7 +9,7 @@ NOTES:
 
 - mavenized
 - not spring boot app
-- meant to be run inside IDE or localhost tomcat to observe the sample implementation; otherwise comment from `applicationContext-common-business.xml` 
+- meant to be run inside IDE or localhost tomcat to observe the sample implementation; otherwise comment the following block from `applicationContext-common-business.xml` to deploy into headless environment; if that case. 
 
   ```
     <bean depends-on="dataSource"
