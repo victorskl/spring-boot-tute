@@ -1,8 +1,10 @@
 # 04-secured-rest-api
 
+Focus on protecting Spring Boot REST API service application using Spring Securiy and Spring Security ACL
+
 ## Un-Secured App
 
-Let start with web app development, also offer REST API service along with.
+Let start with typical web mvc application development which also offer REST API service along with it.
 
 ### start unsecure web app and REST api
 
@@ -65,22 +67,27 @@ Now let secure the app!
 
 ### expression-based access control
 
+___EBAC___
+
 - https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html
 
 - Mainly boil down to two key expressions:
-  1. Role-Based Access Control - RBAC - _hasRole("ADMIN")_
+  1. Role-Based Access Control - ___RBAC___ - _hasRole("ADMIN")_
   
-  2. Permission-Base Access Control - PBAC - _hasPermission(Object target, Object permission)_
+  2. Permission-Base Access Control - ___PBAC___ - _hasPermission(Object target, Object permission)_
 
 - Securing layers:
 
   1. [Web Security](https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html#el-access-web) 
-      - mainly protect URL/path
-      - for REST, it is also possible to protect based-on the resource path and path variable e.g. `/api/studies/{study_id}` and put forward authority check on this resource request
+      - mainly protect URL, path or resource
+      - intercept the URL path pattern and enforce the access on it by defining expression access control _i.e. hasRole() or hasPermission() or hasMyCustomExpression()_
+      - the [access expression can be also backed by Plain-Old Spring Bean (_oh yah, POS-Bean!_ ;o)](https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html#el-access-web-beans) which implement some sort of custom access rule for your business logic
+      - for REST perspective, it is also possible to [protect based-on the resource path and path variable](https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html#el-access-web-path-variables) e.g. `/api/studies/{study_id}` and put forward authority check on this resource request at backing POS-Bean
     
   2. [Method Security](https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html#method-security-expressions)
      - mainly protect service layer methods - _service layer methods security_
-     - 4 checkpoints: [Pre, Post] [Authorize, Filter]     
+     - popular choice for REST API service protection
+     - 4 checkpoints: [Pre, Post] + [Authorize, Filter]     
      - [Important concept!] [how `hasPermission()` expression link to Spring ACL system](https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html#el-method-built-in)      
       - also note the handy [Method Security Meta Annotations](https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/el-access.html#method-security-meta-annotations) to annotate the repeating expression pattern        
       - [ JC ] https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/jc.html#jc-method      
@@ -101,9 +108,14 @@ Now let secure the app!
 
 ### domain object security (ACLs)
 
+___DOS-ACL___
+
 - Access Control List (ACL) is a list of permissions attached to an object. An ACL specifies which identities are granted which operations on a given object.
 
 - Spring Security Access Control List is a Spring component which supports Domain Object Security. Simply put, Spring ACL helps in defining permissions for specific user/role on a single domain object – instead of across the board, at the typical per-operation level.
+
+- DOS-ACL works in tandem with EBAC's RBAC and/or PBAC
+  - especially, by using DOS-ACL system integer bit masking with PBAC, the permissions can be applied at finer granular level on the concerning domain object: e.g. read (bit 0), write (bit 1), create (bit 2), delete (bit 3) and administer (bit 4) on your domain object (e.g. Contact object in contact-management-system) - _aka permission attributes_
 
 - https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/domain-acls.html
 
