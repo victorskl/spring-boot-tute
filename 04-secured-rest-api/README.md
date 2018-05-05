@@ -110,6 +110,18 @@ ___EBAC___
 
 ___DOS-ACL___
 
+- add additional dependencies required for ACL
+  - `org.springframework.security:spring-security-acl`
+  - `org.springframework.security:spring-security-config`
+  - `org.springframework.security:spring-context-support`
+  - `net.sf.ehcache:ehcache-core`
+
+#### concept
+
+- https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/domain-acls.html
+
+- http://www.baeldung.com/spring-security-acl
+
 - Access Control List (ACL) is a list of permissions attached to an object. An ACL specifies which identities are granted which operations on a given object.
 
 - Spring Security Access Control List is a Spring component which supports Domain Object Security. Simply put, Spring ACL helps in defining permissions for specific user/role on a single domain object – instead of across the board, at the typical per-operation level.
@@ -117,19 +129,41 @@ ___DOS-ACL___
 - DOS-ACL works in tandem with EBAC's RBAC and/or PBAC
   - especially, by using DOS-ACL system integer bit masking with PBAC, the permissions can be applied at finer granular level on the concerning domain object: e.g. read (bit 0), write (bit 1), create (bit 2), delete (bit 3) and administer (bit 4) on your domain object (e.g. Contact object in contact-management-system) - _aka permission attributes_
 
-- https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/domain-acls.html
 
-- http://www.baeldung.com/spring-security-acl
-
-- add additional dependencies required for ACL
-  - `org.springframework.security:spring-security-acl`
-  - `org.springframework.security:spring-security-config`
-  - `org.springframework.security:spring-context-support`
-  - `net.sf.ehcache:ehcache-core`
-
-
-### security database default schema
+#### security database default schema
 
 - https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/reference/html/appendix-schema.html
 
+2.1. ACL Database
 
+To use Spring Security ACL, we need to create ___four mandatory tables___ in our database.
+
+- The first table is `ACL_CLASS`, which store class name of the domain object, columns include:
+
+  - `ID` 
+  - `CLASS`: the class name of secured domain objects
+
+- Secondly, we need the `ACL_SID` table which allows us to universally identify any principle or authority in the system. The table needs:
+
+  - `ID`
+  - `SID`: which is the username or role name. `SID` stands for Security Identity
+  - `PRINCIPAL`: 0 or 1, to indicate that the corresponding `SID` is a principal (user, such as mary, mike, jack…) or an authority (role, such as `ROLE_ADMIN`, `ROLE_USER`, `ROLE_EDITOR`, etc)
+
+- Next table is `ACL_OBJECT_IDENTITY`, which stores information for each unique domain object:
+
+  - `ID`
+  - `OBJECT_ID_CLASS`: define the domain object class, links to ACL_CLASS table
+  - `OBJECT_ID_IDENTITY`: domain objects can be stored in many tables depending on the class. Hence, this field store the target object primary key
+  - `PARENT_OBJECT`: specify parent of this Object Identity within this table
+  - `OWNER_SID`: ID of the object owner, links to ACL_SID table
+  - `ENTRIES_INHERITTING`: whether ACL Entries of this object inherits from the parent object (ACL Entries are defined in ACL_ENTRY table)
+
+- Finally, the `ACL_ENTRY` store individual permission assigns to each `SID` on an Object Identity:
+
+  - `ID`
+  - `ACL_OBJECT_IDENTITY`: specify the object identity, links to `ACL_OBJECT_IDENTITY` table
+  - `ACL_ORDER`: the order of current entry in the ACL entries list of corresponding Object Identity
+  - `SID`: the target `SID` which the permission is granted to or denied from, links to `ACL_SID` table
+  - `MASK`: the integer bit mask that represents the actual permission being granted or denied
+  - `GRANTING`: value 1 means granting, value 0 means denying
+  - `AUDIT_SUCCESS` and `AUDIT_FAILURE`: for auditing purpose
