@@ -1,6 +1,8 @@
 # spring-boot-tute
 
-Spring Boot Exercises
+Spring Boot Exercises 
+
+_note: tutes are overly commented for learner purpose_
 
 ### bootstrap 
 

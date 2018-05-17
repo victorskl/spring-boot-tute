@@ -17,6 +17,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -41,9 +43,10 @@ public class SecurityConfig {
 
   @Configuration
   @Order(1)
-  public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+  public class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
     protected void configure(HttpSecurity http) throws Exception {
+      http.csrf().disable(); // FIXME should not do this in Production
       http
           .antMatcher("/api/**")
           .authorizeRequests()
@@ -56,14 +59,14 @@ public class SecurityConfig {
 
   @Configuration
   @Order(2)
-  public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+  public class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
       // required for h2-console
-      http.headers().frameOptions().disable();
-      http.csrf().disable();
+      http.headers().frameOptions().disable(); // FIXME should not do this in Production
+      http.csrf().disable(); // FIXME should not do this in Production
 
       http
           .authorizeRequests()
@@ -73,9 +76,9 @@ public class SecurityConfig {
           .and()
           .formLogin()
           .and()
-          .logout()
-          .logoutUrl("/logout")
-          .logoutSuccessUrl("/login")
+          .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
+          .and()
+          .sessionManagement().maximumSessions(-1).sessionRegistry(sessionRegistry())
       ;
     }
   }
@@ -100,7 +103,6 @@ public class SecurityConfig {
 //        .passwordEncoder(passwordEncoder())
 //        .withUser("user").password(encodedPass).roles("USER");
 
-
     auth
         .jdbcAuthentication()
         .dataSource(dataSource)
@@ -115,15 +117,20 @@ public class SecurityConfig {
         // using custom schema
 
         .usersByUsernameQuery(
-            "select username, password, enabled from user_account where username=?")
+            "select username, password, enabled from users where username=?")
         .authoritiesByUsernameQuery(
-            "select u.username, r.role from user_account u, user_role r where u.id = r.user_account and u.username=?")
+            "select users.username, roles.name from users left outer join roles_users on users.id = roles_users.user_id left outer join roles on roles.id = roles_users.role_id where users.username=?")
     ;
   }
 
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public SessionRegistry sessionRegistry() {
+    return new SessionRegistryImpl();
   }
 }
 

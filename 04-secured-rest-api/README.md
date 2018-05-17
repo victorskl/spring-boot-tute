@@ -64,6 +64,13 @@ Now let secure the app!
 - https://docs.spring.io/spring-boot/docs/current/reference/html/howto-security.html
 - https://docs.spring.io/spring-security/site/docs/4.2.5.RELEASE/guides/html5/helloworld-boot.html
 
+- add `jdbcAuthentication` using SQL data store and insert users
+  ```
+  username:password
+  admin:tommy
+  jesse:tommy
+  jane:tommy
+  ```
 
 ### expression-based access control
 
