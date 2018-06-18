@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,6 +22,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -53,7 +55,19 @@ public class SecurityConfig {
           .anyRequest()
           .authenticated()
           .and()
-          .httpBasic();
+          .httpBasic()
+          //
+          // It is better to get rid of Browser's default Basic Auth login pop-up dialog.
+          // Just return 401 header, if the connection is unauthorized or session has expired.
+          // This is especially important to avoid confusion, if there is a Single-page Application
+          // (SPA) frontend UI serve along with the API backend web resources.
+          //
+          // https://stackoverflow.com/questions/33801468/how-let-spring-security-response-unauthorizedhttp-401-code-if-requesting-uri-w
+          //
+          .and().exceptionHandling()
+          //.authenticationEntryPoint(new Http401AuthenticationEntryPoint("headerValue")) // before 2.0
+          .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+       ;
     }
   }
 
