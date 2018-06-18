@@ -7,7 +7,7 @@ APP=$1
 mkdir -p ${APP}/src/main/java/start
 mkdir -p ${APP}/src/main/resources
 
-cat >${APP}/src/main/java/Application.java <<EOF
+cat >${APP}/src/main/java/start/Application.java <<EOF
 package start;
 
 import org.springframework.boot.SpringApplication;
@@ -35,7 +35,7 @@ EOF
 mkdir -p ${APP}/src/test/java/start
 mkdir -p ${APP}/src/test/resources
 
-cat >${APP}/src/test/java/ApplicationTest.java <<EOF
+cat >${APP}/src/test/java/start/ApplicationTest.java <<EOF
 package start;
 
 import org.junit.Test;

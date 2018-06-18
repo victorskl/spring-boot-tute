@@ -21,16 +21,18 @@ my-boot-app
 └── src
     ├── main
     │   ├── java
-    │   │   └── Application.java
+    │   │   └── start
+    │   │       └── Application.java
     │   └── resources
     │       └── application.properties
     └── test
         ├── java
-        │   └── ApplicationTest.java
+        │   └── start
+        │       └── ApplicationTest.java
         └── resources
             └── application.properties
 
-7 directories, 6 files
+9 directories, 6 files
 ```
 
 - Alternatively, use the [https://start.spring.io](https://start.spring.io) or through [`spring` CLI](00-using-cli)
