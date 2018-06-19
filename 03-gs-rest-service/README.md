@@ -3,7 +3,7 @@
 - Tute focus:
   - creating simple REST API endpoint
   - springfox swagger
-  - a bit more on actuator
+  - a bit more on [actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-enabling.html)
 
 - https://spring.io/guides/gs/rest-service/
 
@@ -36,3 +36,5 @@ open -a Safari http://localhost:8080/swagger-ui.html
 - [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs)
 
 - [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+- [http://localhost:8080/actuator](http://localhost:8080/actuator)

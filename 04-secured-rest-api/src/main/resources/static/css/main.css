@@ -1,6 +1,9 @@
 body {
   font-family: Verdana, sans, sans-serif;
   font-size: 1em;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 2%;
 }
 
 p.error {

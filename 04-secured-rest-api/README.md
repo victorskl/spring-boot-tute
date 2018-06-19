@@ -9,35 +9,36 @@ Let start with typical web mvc application development which also offer REST API
 ### start unsecure web app and REST api
 
 - add starter-web
+
+
+### add swagger for API documentation
+
 - add `io.springfox:springfox-swagger2` and `io.springfox:springfox-swagger-ui` for REST API at /swagger-ui.html
-
-
-### thymeleaf
-
-- add starter-thymeleaf
-- add `org.thymeleaf.extras:thymeleaf-extras-springsecurity4`
-- https://spring.io/guides/gs/serving-web-content/
-- http://www.baeldung.com/spring-boot-start
-- http://www.baeldung.com/thymeleaf-in-spring-mvc
-- http://www.baeldung.com/spring-security-thymeleaf
-
-### testing
-
-- add starter-test
-- add starter-actuator
-
-
-### logging
-
-- https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html
-- https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html
-- https://www.mkyong.com/spring-boot/spring-boot-slf4j-logging-example/
 
 
 ### lombok
 
+- [_lombok?_](https://github.com/victorskl/jackson-lombok-tute)
 - add `org.projectlombok:lombok`
 - https://projectlombok.org/setup/intellij
+
+
+### testing
+
+- add [starter-test](https://github.com/victorskl/spring-boot-tute/tree/master/02-gs-spring-boot)
+
+
+### monitoring
+
+- add [starter-actuator](https://github.com/victorskl/spring-boot-tute/tree/master/03-gs-rest-service)
+
+
+### logging
+
+- By default, the SLF4j Logging is included in the Spring Boot starter package. Therefore, we can just use lombok [`@Log`](https://projectlombok.org/features/log) or [`@Slf4j`](https://projectlombok.org/api/lombok/extern/slf4j/Slf4j.html) 
+- https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html
+- https://docs.spring.io/spring-boot/docs/current/reference/html/howto-logging.html
+- https://www.mkyong.com/spring-boot/spring-boot-slf4j-logging-example/
 
 
 ### sql database
@@ -51,6 +52,16 @@ Let start with typical web mvc application development which also offer REST API
 - https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html
 - add `org.flywaydb:flyway-core`
 - https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html#howto-use-a-higher-level-database-migration-tool
+
+
+### thymeleaf
+
+- add starter-thymeleaf
+- add `org.thymeleaf.extras:thymeleaf-extras-springsecurity4`
+- https://spring.io/guides/gs/serving-web-content/
+- http://www.baeldung.com/spring-boot-start
+- http://www.baeldung.com/thymeleaf-in-spring-mvc
+- http://www.baeldung.com/spring-security-thymeleaf
 
 
 ## Security
