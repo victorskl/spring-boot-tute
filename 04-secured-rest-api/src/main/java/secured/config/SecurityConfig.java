@@ -9,11 +9,15 @@ package secured.config;
 ///*
 
 import javax.sql.DataSource;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.audit.AuditEvent;
+import org.springframework.boot.actuate.audit.listener.AuditApplicationEvent;
+import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,8 +26,9 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
+@Log
 @EnableWebSecurity
 public class SecurityConfig {
 
@@ -50,10 +55,7 @@ public class SecurityConfig {
     protected void configure(HttpSecurity http) throws Exception {
       http.csrf().disable(); // FIXME should not do this in Production
       http
-          .antMatcher("/api/**")
-          .authorizeRequests()
-          .anyRequest()
-          .authenticated()
+          .antMatcher("/api/**").authorizeRequests().anyRequest().authenticated()
           .and()
           .httpBasic()
           //
@@ -64,22 +66,49 @@ public class SecurityConfig {
           //
           // https://stackoverflow.com/questions/33801468/how-let-spring-security-response-unauthorizedhttp-401-code-if-requesting-uri-w
           //
-          .and().exceptionHandling()
-          //.authenticationEntryPoint(new Http401AuthenticationEntryPoint("headerValue")) // before 2.0
-          .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+          .and()
+          .exceptionHandling()
+            .authenticationEntryPoint(new Http401AuthenticationEntryPoint("headerValue")) // before 2.0
+            //.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // Spring Boot > 2.0
        ;
     }
   }
 
   @Configuration
   @Order(2)
+  public class PrometheusWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+
+    protected void configure(HttpSecurity http) throws Exception {
+      http
+          .antMatcher("/prometheus").authorizeRequests().anyRequest().authenticated()
+          .and()
+          .httpBasic()
+          .and()
+          .exceptionHandling()
+          .authenticationEntryPoint(new Http401AuthenticationEntryPoint("headerValue")) // before 2.0
+          //.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) // Spring Boot > 2.0
+      ;
+    }
+  }
+
+  @Configuration
+  @Order(3)
   public class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
       // required for h2-console
-      http.headers().frameOptions().disable(); // FIXME should not do this in Production
+
+      // should not be doing this in Production unless fronted by a reverse proxy which
+      // taken care of X-Frame-Options header
+      //http.headers().frameOptions().disable();
+
+      // Allow iframe by setting X-Frame-Options: SAMEORIGIN
+      // https://docs.spring.io/spring-security/site/docs/current/reference/html/headers.html#headers-frame-options
+      // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+      http.headers().frameOptions().sameOrigin();
+
       http.csrf().disable(); // FIXME should not do this in Production
 
       http
@@ -145,6 +174,21 @@ public class SecurityConfig {
   @Bean
   public SessionRegistry sessionRegistry() {
     return new SessionRegistryImpl();
+  }
+
+  // if Spring Boot is > 2.0, this is no longer required and, it is part of actuator AuditEvent
+  // http://www.baeldung.com/spring-boot-authentication-audit
+  @EventListener
+  public void auditEventHappened(AuditApplicationEvent auditApplicationEvent) {
+
+    AuditEvent auditEvent = auditApplicationEvent.getAuditEvent();
+    WebAuthenticationDetails details = (WebAuthenticationDetails) auditEvent.getData().get("details");
+
+    if (details != null) {
+      log.info("Principal " + auditEvent.getPrincipal() + " - " + auditEvent.getType()
+          + ", Session Id: " + details.getSessionId()
+          + ", Remote IP address: " + details.getRemoteAddress());
+    }
   }
 }
 
