@@ -6,7 +6,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@Log
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 public class SecurityConfigIT {
