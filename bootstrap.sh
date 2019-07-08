@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-[ $# -eq 0 ] && { echo "Usage: $0 my-boot-app-name"; exit 1; }
+[[ $# -eq 0 ]] && { echo "Usage: $0 my-boot-app-name"; exit 1; }
 
 APP=$1
 

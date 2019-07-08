@@ -8,6 +8,8 @@ package secured.config;
 
 ///*
 
+import java.util.Arrays;
+import java.util.Collections;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Slf4j
 @EnableWebSecurity
@@ -54,6 +59,7 @@ public class SecurityConfig {
 
     protected void configure(HttpSecurity http) throws Exception {
       http.csrf().disable(); // FIXME should not do this in Production
+      http.cors(); // add CORS request support
       http
           .antMatcher("/api/**").authorizeRequests().anyRequest().authenticated()
           .and()
@@ -189,6 +195,16 @@ public class SecurityConfig {
           + ", Session Id: " + details.getSessionId()
           + ", Remote IP address: " + details.getRemoteAddress());
     }
+  }
+
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Collections.singletonList("*")); // allow pre-flight request only, so this is safe
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 }
 
