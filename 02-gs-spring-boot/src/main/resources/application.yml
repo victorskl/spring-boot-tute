@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: hello-application
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Warning: Exposing all Actuator endpoints is suitable for local development only. Several endpoints can reveal
+        # configuration or sensitive operational information. Avoid using this setting in production.
+        include: "*"
+          # - health
+          # - info
+
+  endpoint:
+    health:
+      show-details: always
+
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: Hello Application
+    description: Example Spring Boot application
+    version: 1.0.0
