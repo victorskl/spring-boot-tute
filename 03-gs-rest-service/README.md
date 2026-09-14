@@ -1,40 +1,46 @@
 # 03-gs-rest-service
 
-- Tute focus:
-  - creating simple REST API endpoint
-  - springfox swagger
-  - a bit more on [actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-enabling.html)
-
-- https://spring.io/guides/gs/rest-service/
-
-- http://www.baeldung.com/swagger-2-documentation-for-spring-rest-api
-
-- http://codeboje.de/spring-boot-info-actuator/
+- The tutorial focuses on:
+  - creating a simple REST API endpoint
+    - https://spring.io/guides/gs/rest-service
+  - springdoc-openapi
+    - https://github.com/springdoc/springdoc-openapi
+  - actuator
+    - https://docs.spring.io/spring-boot/how-to/actuator.html
+    - https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.info
+  - build info
+    - https://docs.spring.io/spring-boot/how-to/build.html
 
 ```
 cd 03-gs-rest-service
 
 mvn spring-boot:run
+```
 
+- http://localhost:8080/swagger-ui.html
+- http://localhost:8080/api-docs
+- http://localhost:8080/actuator
+
+## curl
+
+```
+curl -s -X POST http://localhost:8080/custom | jq
+curl -s http://localhost:8080/users | jq
+curl -s http://localhost:8080/greeting | jq
+curl -s http://localhost:8080/greeting?name=Victor | jq
+```
+
+```
+curl -s http://localhost:8080/actuator | jq
+curl -s http://localhost:8080/actuator/info | jq
+curl -s http://localhost:8080/actuator/health | jq
+```
+
+## package
+
+```
 mvn clean package
 tree target
 
 java -jar target/03-gs-rest-service-1.0-SNAPSHOT.jar
-
-curl http://localhost:8080/actuator/health
-curl http://localhost:8080/actuator/info
-curl http://localhost:8080/actuator
-
-curl http://localhost:8080/greeting
-curl http://localhost:8080/greeting?name=User
-
-curl http://localhost:8080/v2/api-docs
-
-open -a Safari http://localhost:8080/swagger-ui.html
 ```
-
-- [http://localhost:8080/v2/api-docs](http://localhost:8080/v2/api-docs)
-
-- [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-
-- [http://localhost:8080/actuator](http://localhost:8080/actuator)

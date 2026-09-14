@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomController {
 
     @RequestMapping(value = "/custom", method = RequestMethod.POST)
-    public String custom() {
-        return "custom";
+    public Custom custom() {
+        return new Custom("Victor", 18);
     }
 }
